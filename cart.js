@@ -1,18 +1,14 @@
 // Create a <link> element for the external CSS file
-var link = document.createElement('link');
-
-// Set the attributes for the link element
+const link = document.createElement('link');
 link.rel = 'stylesheet';
 link.type = 'text/css';
-link.href = 'style.css'; // Path to your external CSS file
-
-// Append the link element to the document head
+link.href = 'style.css';
 document.head.appendChild(link);
 
 // Cart Page Functionality
 function renderCartPage() {
-    let cart = JSON.parse(localStorage.getItem("cart")) || {};
-    console.log(cart)
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    console.log(cart);
     const cartTableBody = document.getElementById("cartTableBody");
     const totalAmount = document.getElementById("totalAmount");
 
@@ -30,8 +26,7 @@ function renderCartPage() {
         return;
     }
 
-    Object.keys(cart).forEach(bookId => {
-        let item = cart[bookId];
+    Object.entries(cart).forEach(([bookId, item]) => {
         let itemTotal = (parseFloat(item.price) * item.quantity).toFixed(2);
         total += parseFloat(itemTotal);
 
@@ -53,13 +48,13 @@ function renderCartPage() {
 // Function to remove an item from the cart
 function removeFromCart(bookId) {
     let cart = JSON.parse(localStorage.getItem("cart")) || {};
-    if (!cart[bookId]) return;
 
-    delete cart[bookId];
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    renderCartPage(); // Refresh the cart
-    updateCartCount(); // Update cart count in header
+    if (cart[bookId]) {
+        delete cart[bookId];
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCartPage(); // Refresh the cart after removal
+        updateCartCount(); // Update cart count in header
+    }
 }
 
 // Run renderCartPage only on cart.html

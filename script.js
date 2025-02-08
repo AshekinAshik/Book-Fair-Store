@@ -1,6 +1,13 @@
+// Create a <link> element for the external CSS file
+const link = document.createElement('link');
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = 'style.css';
+document.head.appendChild(link);
+
 const booksPerPage = 60;
 let currentPage = parseInt(localStorage.getItem("currentPage")) || 1;
-let books = [
+const books = [
     { "id": 1, "name": "পথের পাঁচালি", "price": "1600" },
     { "id": 2, "name": "The Whispering Pines", "price": "1100" },
     { "id": 3, "name": "নীল আকাশের নিচে", "price": "1400" },
@@ -168,45 +175,34 @@ let books = [
     { "id": 165, "name": "রুপোর পাহাড়", "price": "1800" },
 ];
 
-let cart = {};
-
-// Sample books data (Replace with actual JSON data)
-// for (let i = 1; i <= 300; i++) {
-//     books.push({ id: i, name: `Book ${i}`, price: (Math.random() * 50 + 10).toFixed(2) });
-// }
-
 let filteredBooks = [...books];
 
 function renderBooks() {
     const bookList = document.getElementById("bookList");
-    bookList.innerHTML = "";
+    bookList.innerHTML = ""; // Clear existing books
+
     let start = (currentPage - 1) * booksPerPage;
     let end = start + booksPerPage;
     let paginatedBooks = filteredBooks.slice(start, end);
 
     paginatedBooks.forEach(book => {
-        const bookCard = document.createElement("div");
-        bookCard.className = "col-md-2 book-card";
-        bookCard.innerHTML = `
-            <h5>${book.name}</h5>
-            <p>Price: ৳ ${book.price}</p>
-            <button class="btn btn-primary" onclick="addToCart(${book.id})">Add to Cart</button>
+        bookList.innerHTML += `
+            <div class="col-md-2 book-card">
+                <h5>${book.name}</h5>
+                <p>Price: ৳ ${book.price}</p>
+                <button class="btn btn-primary" onclick="addToCart(${book.id})">Add to Cart</button>
+            </div>
         `;
-        bookList.appendChild(bookCard);
     });
 }
 
 function setupPagination() {
     const pageNumbers = document.getElementById("pageNumbers");
     pageNumbers.innerHTML = "";
-    let totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
+    let totalPages = Math.ceil(filteredBooks.length / booksPerPage);
     for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement("button");
-        pageButton.innerText = i;
-        pageButton.className = `btn ${i === currentPage ? "btn-primary active" : "btn-light"}`;
-        pageButton.onclick = () => changePage(i);
-        pageNumbers.appendChild(pageButton);
+        pageNumbers.innerHTML += `<button class="btn ${i === currentPage ? "btn-primary active" : "btn-light"}" onclick="changePage(${i})">${i}</button>`;
     }
 
     // Disable Prev/Next buttons when needed
@@ -216,7 +212,7 @@ function setupPagination() {
 
 function changePage(page) {
     currentPage = page;
-    localStorage.setItem("currentPage", currentPage);
+    localStorage.setItem("currentPage", currentPage); // Update page in localStorage
     renderBooks();
     setupPagination();
 }
@@ -226,100 +222,41 @@ document.getElementById("prevPage").addEventListener("click", () => {
 });
 
 document.getElementById("nextPage").addEventListener("click", () => {
-    let totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+    const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
     if (currentPage < totalPages) changePage(currentPage + 1);
 });
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const prevPageBtn = document.getElementById("prevPage");
-//     const nextPageBtn = document.getElementById("nextPage");
-
-//     if (prevPageBtn) {
-//         prevPageBtn.addEventListener("click", () => {
-//             if (currentPage > 1) changePage(currentPage - 1);
-//         });
-//     }
-
-//     if (nextPageBtn) {
-//         nextPageBtn.addEventListener("click", () => {
-//             let totalPages = Math.ceil(filteredBooks.length / booksPerPage);
-//             if (currentPage < totalPages) changePage(currentPage + 1);
-//         });
-//     }
-
-//     setupPagination();
-// });
-
-// function addToCart(bookId) {
-//     cart[bookId] = (cart[bookId] || 0) + 1;
-//     localStorage.setItem("cart", JSON.stringify(cart));
-//     updateCartCount();
-// }
-// function updateCartCount() {
-//     document.getElementById("cartCount").innerText = Object.values(cart).reduce((a, b) => a + b, 0);
-// }
-
-// function addToCart(bookId) {
-//     let book = books.find(b => b.id == bookId);
-
-//     if (!book) return;
-
-//     if (!cart[bookId]) {
-//         cart[bookId] = { name: book.name, price: book.price, quantity: 1 };
-//     } else {
-//         cart[bookId].quantity += 1;
-//     }
-
-//     localStorage.setItem("cart", JSON.stringify(cart));
-//     updateCartCount();
-// }
-// function updateCartCount() {
-//     let totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
-//     document.getElementById("cartCount").innerText = totalItems;
-// }
-
 function addToCart(bookId) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || {};
     let book = books.find(b => b.id === bookId);
     if (!book) return;
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || {};
+    let bookPrice = parseFloat(book.price.replace(/[^\d.]/g, "")); // Price as number
 
-    // Ensure price is stored as a number (remove currency symbols)
-    let bookPrice = parseFloat(book.price.replace(/[^\d.]/g, ""));
+    // Add or update the book in the cart
+    cart[bookId] = cart[bookId] || { id: book.id, name: book.name, price: bookPrice, quantity: 0 };
+    cart[bookId].quantity += 1;
 
-    if (cart[bookId]) {
-        cart[bookId].quantity += 1;
-    } else {
-        cart[bookId] = {
-            id: book.id,
-            name: book.name,
-            price: bookPrice, // Storing price as a number
-            quantity: 1
-        };
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart)); // Save updated cart
     updateCartCount();
 }
 
-// Update cart count in the header
 function updateCartCount() {
-    let cart = JSON.parse(localStorage.getItem("cart")) || {};
-    let totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
     document.getElementById("cartCount").innerText = totalItems;
 }
 
 function searchBooks() {
     const query = document.getElementById("searchBox").value.toLowerCase();
     filteredBooks = books.filter(book => book.name.toLowerCase().includes(query));
-    currentPage = 1;
-    localStorage.setItem("currentPage", currentPage);
+    currentPage = 1; // Reset to the first page on search
+    localStorage.setItem("currentPage", currentPage); // Update page in localStorage
     renderBooks();
     setupPagination();
 }
 
 document.getElementById("searchBox").addEventListener("input", searchBooks);
-
 document.getElementById("cartButton").addEventListener("click", () => {
     window.location.href = "cart.html";
 });
