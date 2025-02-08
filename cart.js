@@ -7,7 +7,7 @@ document.head.appendChild(link);
 
 // Cart Page Functionality
 function renderCartPage() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const cart = JSON.parse(sessionStorage.getItem("cart")) || {};
     console.log(cart);
     const cartTableBody = document.getElementById("cartTableBody");
     const totalAmount = document.getElementById("totalAmount");
@@ -47,11 +47,11 @@ function renderCartPage() {
 
 // Function to remove an item from the cart
 function removeFromCart(bookId) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || {};
+    let cart = JSON.parse(sessionStorage.getItem("cart")) || {};
 
     if (cart[bookId]) {
         delete cart[bookId];
-        localStorage.setItem("cart", JSON.stringify(cart));
+        sessionStorage.setItem("cart", JSON.stringify(cart));
         renderCartPage(); // Refresh the cart after removal
         updateCartCount(); // Update cart count in header
     }

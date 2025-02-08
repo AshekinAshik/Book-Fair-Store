@@ -6,7 +6,7 @@ link.href = 'style.css';
 document.head.appendChild(link);
 
 const booksPerPage = 60;
-let currentPage = parseInt(localStorage.getItem("currentPage")) || 1;
+let currentPage = parseInt(sessionStorage.getItem("currentPage")) || 1;
 const books = [
     { "id": 1, "name": "পথের পাঁচালি", "price": "1600" },
     { "id": 2, "name": "The Whispering Pines", "price": "1100" },
@@ -212,7 +212,7 @@ function setupPagination() {
 
 function changePage(page) {
     currentPage = page;
-    localStorage.setItem("currentPage", currentPage); // Update page in localStorage
+    sessionStorage.setItem("currentPage", currentPage); // Update page in sessionStorage
     renderBooks();
     setupPagination();
 }
@@ -227,7 +227,7 @@ document.getElementById("nextPage").addEventListener("click", () => {
 });
 
 function addToCart(bookId) {
-    let cart = JSON.parse(localStorage.getItem("cart")) || {};
+    let cart = JSON.parse(sessionStorage.getItem("cart")) || {};
     let book = books.find(b => b.id === bookId);
     if (!book) return;
 
@@ -237,12 +237,12 @@ function addToCart(bookId) {
     cart[bookId] = cart[bookId] || { id: book.id, name: book.name, price: bookPrice, quantity: 0 };
     cart[bookId].quantity += 1;
 
-    localStorage.setItem("cart", JSON.stringify(cart)); // Save updated cart
+    sessionStorage.setItem("cart", JSON.stringify(cart)); // Save updated cart
     updateCartCount();
 }
 
 function updateCartCount() {
-    const cart = JSON.parse(localStorage.getItem("cart")) || {};
+    const cart = JSON.parse(sessionStorage.getItem("cart")) || {};
     const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
     document.getElementById("cartCount").innerText = totalItems;
 }
@@ -251,7 +251,7 @@ function searchBooks() {
     const query = document.getElementById("searchBox").value.toLowerCase();
     filteredBooks = books.filter(book => book.name.toLowerCase().includes(query));
     currentPage = 1; // Reset to the first page on search
-    localStorage.setItem("currentPage", currentPage); // Update page in localStorage
+    sessionStorage.setItem("currentPage", currentPage); // Update page in sessionStorage
     renderBooks();
     setupPagination();
 }
