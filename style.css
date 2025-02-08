@@ -1,55 +1,77 @@
 body {
-    font-family: Arial, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background-color: #007bff;
-    color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #007bff;
+  color: white;
 }
 
 #searchBox {
-    width: 250px;
+  width: 250px;
 }
 
 .cart button {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 #bookList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: space-evenly;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-evenly;
 }
 
 .book-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    width: 18%;
-    text-align: center;
-    background: #f9f9f9;
-    border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  width: 18%;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 5px;
 }
 
 .pagination {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 #pageNumbers button {
-    background: white;
-    border: 1px solid #007bff;
-    padding: 5px 10px;
-    cursor: pointer;
+  background: white;
+  border: 1px solid #007bff;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 #pageNumbers button.active {
-    background: #007bff;
-    color: white;
-    font-weight: bold;
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.remove-btn {
+  background-color: #dc3545; /* Red background */
+  color: white; /* White text color */
+  font-size: 12px; /* Font size */
+  padding: 5px 10px; /* Padding for the button */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  text-transform: uppercase; /* Uppercase text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.remove-btn:hover {
+  background-color: #c82333; /* Darker red on hover */
+  color: white;
+  transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.remove-btn:focus {
+  outline: none; /* Remove outline on focus */
 }
